@@ -2,6 +2,28 @@
 
 A privacy-focused web app for analyzing your WhatsApp chat exports. All processing happens locally in your browser - your conversations never leave your device.
 
+## Screenshots
+
+### Overview
+Get instant insights with the main dashboard showing total messages, activity trends, and key statistics.
+
+![Main Dashboard](screenshots/overview.png)
+
+### Sentiment Analysis
+Track conversation mood over time with AI-powered sentiment analysis for each participant.
+
+![Sentiment Analysis](screenshots/sentiment.png)
+
+### Activity Patterns
+Visualize when conversations happen throughout the day with interactive charts.
+
+![Activity by Hour](screenshots/activity.png)
+
+### Emoji Analysis
+See which emojis each person uses most frequently in side-by-side comparison.
+
+![Top Emojis](screenshots/emojis.png)
+
 ## Features
 
 ### Core Analytics
