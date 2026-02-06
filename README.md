@@ -100,6 +100,14 @@ Navigate to `http://localhost:8000`
 4. Choose "Without Media"
 5. Save the .txt file and upload it to the analyzer
 
+### On WhatsApp Desktop (Windows/Mac/Linux):
+1. Open WhatsApp Desktop and select the chat you want to analyze
+2. Click the three dots (⋮) in the top right corner of the chat
+3. Select "More" then "Export chat"
+4. Choose "Without media"
+5. Select where to save the .txt file
+6. Upload the saved file to the analyzer
+
 ## Privacy
 
 Your data never leaves your device. This app:
