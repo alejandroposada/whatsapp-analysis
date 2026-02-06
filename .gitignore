@@ -1,0 +1,43 @@
+# OS Files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Test data
+*.txt
+test-chats/
+sample-data/
+
+# Temporary files
+*.tmp
+*.log
+
+# Node modules (if added later)
+node_modules/
+
+# Build outputs (if added later)
+dist/
+build/
+
+# Environment files
+.env
+.env.local
+
+# Screenshots for issues (keep the directory but not contents)
+issues/*.png
+issues/*.jpg
+!issues/.gitkeep
+
+# Claude Code settings
+.claude/

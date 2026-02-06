@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WhatsApp Conversation Analyzer</title>
+  <link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+  <!-- Upload Screen -->
+  <div id="upload-screen" class="upload-screen">
+    <div class="upload-container">
+      <div class="upload-header">
+        <h1 class="app-title">WhatsApp Conversation Analyzer</h1>
+        <p class="app-subtitle">Analyze your WhatsApp conversations with beautiful visualizations</p>
+      </div>
+
+      <div id="drop-zone" class="drop-zone">
+        <div class="drop-zone-icon">📊</div>
+        <h2 class="drop-zone-title">Drop your WhatsApp chat export here</h2>
+        <p class="drop-zone-subtitle">or click to browse</p>
+        <input type="file" id="file-input" accept=".txt" hidden>
+        <button id="browse-button" class="browse-button">Choose File</button>
+      </div>
+
+      <div class="upload-instructions">
+        <h3>How to export your WhatsApp chat:</h3>
+        <ol>
+          <li>Open WhatsApp on your phone</li>
+          <li>Open the chat you want to analyze</li>
+          <li>Tap the menu (⋮) and select "More"</li>
+          <li>Select "Export chat"</li>
+          <li>Choose "Without Media"</li>
+          <li>Upload the .txt file here</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main App Screen -->
+  <div id="app-screen" class="app-screen hidden">
+    <!-- Header -->
+    <header class="app-header">
+      <div class="header-content">
+        <h1 class="header-title">Conversation Analysis</h1>
+        <div class="header-actions">
+          <button id="theme-toggle" class="theme-toggle" title="Toggle Dark Mode">
+            <span class="theme-icon">🌙</span>
+          </button>
+          <button id="new-analysis-button" class="new-analysis-button">New Analysis</button>
+        </div>
+      </div>
+
+      <!-- Date Range Filter -->
+      <div class="date-range-bar">
+        <div class="date-range-content">
+          <label class="date-range-label">Date Range:</label>
+          <div class="date-range-inputs">
+            <input type="date" id="date-from" class="date-input" />
+            <span class="date-separator">to</span>
+            <input type="date" id="date-to" class="date-input" />
+          </div>
+          <div class="date-range-actions">
+            <button id="apply-date-filter" class="date-button date-button-primary">Apply</button>
+            <button id="reset-date-filter" class="date-button date-button-secondary">All Time</button>
+          </div>
+          <div id="date-range-info" class="date-range-info"></div>
+        </div>
+        <div class="date-presets">
+          <button class="date-preset-btn" data-preset="last30days">Last 30 Days</button>
+          <button class="date-preset-btn" data-preset="last3months">Last 3 Months</button>
+          <button class="date-preset-btn" data-preset="thisyear">This Year</button>
+          <button class="date-preset-btn" data-preset="lastyear">Last Year</button>
+          <button class="date-preset-btn" data-preset="weekends">Weekends Only</button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content" id="main-content">
+      <!-- Hero Card -->
+      <section class="hero-card">
+        <div class="hero-content">
+          <div class="hero-label" id="hero-label">Total Messages</div>
+          <div class="hero-number" id="hero-number">0</div>
+          <div class="hero-subtitle" id="hero-subtitle">Loading...</div>
+        </div>
+      </section>
+
+      <!-- Activity Trend Banner -->
+      <section id="activity-trend-banner" class="trend-banner">
+        <!-- Content will be inserted dynamically -->
+      </section>
+
+      <!-- Peak Prediction Banner -->
+      <section id="peak-prediction-banner" class="prediction-banner">
+        <!-- Content will be inserted dynamically -->
+      </section>
+
+      <!-- Quick Stats Grid -->
+      <section class="stats-grid" id="stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon">💬</div>
+          <div class="stat-content">
+            <div class="stat-label">Messages</div>
+            <div class="stat-number" id="stat-messages">0</div>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon">📝</div>
+          <div class="stat-content">
+            <div class="stat-label">Words</div>
+            <div class="stat-number" id="stat-words">0</div>
+            <div class="stat-comparison" id="stat-words-comparison"></div>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon">✏️</div>
+          <div class="stat-content">
+            <div class="stat-label">Letters</div>
+            <div class="stat-number" id="stat-letters">0</div>
+            <div class="stat-comparison" id="stat-letters-comparison"></div>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon">😊</div>
+          <div class="stat-content">
+            <div class="stat-label">Emojis</div>
+            <div class="stat-number" id="stat-emojis">0</div>
+          </div>
+        </div>
+
+        <div class="stat-card stat-card-highlight">
+          <div class="stat-icon">🔥</div>
+          <div class="stat-content">
+            <div class="stat-label">Longest Streak</div>
+            <div class="stat-number" id="stat-longest-streak">0</div>
+            <div class="stat-sublabel">consecutive days</div>
+          </div>
+        </div>
+
+        <div class="stat-card stat-card-highlight" id="current-streak-card">
+          <div class="stat-icon">⚡</div>
+          <div class="stat-content">
+            <div class="stat-label">Current Streak</div>
+            <div class="stat-number" id="stat-current-streak">0</div>
+            <div class="stat-sublabel">days active</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Relationship Health Section -->
+      <section class="section-card">
+        <h2 class="section-title">❤️ Relationship Health</h2>
+        <div id="relationship-health-container" class="relationship-health-container">
+          <!-- Content will be inserted dynamically -->
+        </div>
+      </section>
+
+      <!-- Sentiment Analysis Section -->
+      <section class="section-card">
+        <h2 class="section-title">😊 Sentiment Analysis</h2>
+        <div id="sentiment-analysis-content" class="sentiment-analysis-content">
+          <!-- Content will be inserted dynamically -->
+        </div>
+        <div class="chart-container" style="margin-top: 20px;">
+          <canvas id="sentiment-trend-chart"></canvas>
+        </div>
+      </section>
+
+      <!-- Communication Style Section -->
+      <section class="section-card">
+        <h2 class="section-title">Communication Style</h2>
+        <div id="communication-style-content" class="communication-style-content">
+          <!-- Content will be inserted dynamically -->
+        </div>
+      </section>
+
+      <!-- Response Time Section -->
+      <section class="section-card">
+        <h2 class="section-title">Response Time</h2>
+        <div class="response-time-content">
+          <div class="response-time-stat">
+            <div class="response-time-label">Average Response Time</div>
+            <div class="response-time-value" id="avg-response-time">-</div>
+          </div>
+          <div class="response-time-chart">
+            <canvas id="response-time-chart"></canvas>
+          </div>
+        </div>
+      </section>
+
+      <!-- Conversation Starters Section -->
+      <section class="section-card">
+        <h2 class="section-title">Conversation Starters</h2>
+        <div id="conversation-starters-content" class="conversation-starters-content">
+          <!-- Content will be inserted dynamically -->
+        </div>
+      </section>
+
+      <!-- Time Patterns Section -->
+      <section class="section-card">
+        <h2 class="section-title">Activity by Hour</h2>
+        <div class="chart-container">
+          <canvas id="hourly-chart"></canvas>
+        </div>
+      </section>
+
+      <section class="section-card">
+        <h2 class="section-title">Activity by Day</h2>
+        <div class="chart-container">
+          <canvas id="daily-chart"></canvas>
+        </div>
+      </section>
+
+      <section class="section-card">
+        <h2 class="section-title">Messages Over Time</h2>
+        <div class="chart-container">
+          <canvas id="timeline-chart"></canvas>
+        </div>
+      </section>
+
+      <!-- Activity Heatmap -->
+      <section class="section-card">
+        <h2 class="section-title">Activity Heatmap</h2>
+        <div class="heatmap-container">
+          <canvas id="heatmap-canvas"></canvas>
+        </div>
+      </section>
+
+      <!-- Most Active Days -->
+      <section class="section-card">
+        <h2 class="section-title">🔥 Most Active Days</h2>
+        <div id="most-active-days-content" class="most-active-days-content"></div>
+      </section>
+
+      <!-- Message Length Over Time -->
+      <section class="section-card">
+        <h2 class="section-title">📏 Message Length Over Time</h2>
+        <div class="chart-container">
+          <canvas id="message-length-trend-chart"></canvas>
+        </div>
+      </section>
+
+      <!-- Conversation Length Analysis -->
+      <section class="section-card">
+        <h2 class="section-title">💬 Conversation Length Analysis</h2>
+        <div class="convo-length-content">
+          <div class="convo-length-stats">
+            <div class="convo-stat">
+              <div class="convo-stat-label">Total Conversations</div>
+              <div class="convo-stat-value" id="total-conversations">0</div>
+            </div>
+            <div class="convo-stat">
+              <div class="convo-stat-label">Average Length</div>
+              <div class="convo-stat-value" id="avg-convo-length">0</div>
+            </div>
+            <div class="convo-stat">
+              <div class="convo-stat-label">Longest Conversation</div>
+              <div class="convo-stat-value" id="longest-convo">0</div>
+            </div>
+          </div>
+          <div class="chart-container" style="height: 300px;">
+            <canvas id="conversation-length-chart"></canvas>
+          </div>
+        </div>
+      </section>
+
+      <!-- Conversation Initiator Patterns -->
+      <section class="section-card">
+        <h2 class="section-title">🌅 Conversation Initiator Patterns</h2>
+        <div class="chart-container">
+          <canvas id="initiator-patterns-chart"></canvas>
+        </div>
+      </section>
+
+      <!-- Response Time Heatmap -->
+      <section class="section-card">
+        <h2 class="section-title">⏱️ Response Time by Hour</h2>
+        <div id="response-time-heatmap-container" class="response-time-heatmap-container">
+          <!-- Heatmap will be inserted dynamically -->
+        </div>
+      </section>
+
+      <!-- Top Words Analysis -->
+      <section class="section-card">
+        <div class="section-header-with-controls">
+          <h2 class="section-title">Most Used Words</h2>
+          <button id="toggle-stop-words" class="toggle-button" title="Show/Hide common words">
+            <span class="toggle-icon">🔤</span>
+            <span class="toggle-text">Hide Common Words</span>
+          </button>
+        </div>
+        <div id="top-words-grid" class="top-words-grid">
+          <!-- Words will be inserted dynamically -->
+        </div>
+      </section>
+
+      <!-- Emoji Analysis -->
+      <section class="section-card">
+        <h2 class="section-title">Top Emojis</h2>
+        <div class="emoji-grid" id="emoji-grid">
+          <!-- Emojis will be inserted dynamically -->
+        </div>
+      </section>
+
+      <!-- Participant Comparison (only shown for Total view) -->
+      <section class="section-card" id="participant-comparison-section">
+        <h2 class="section-title">Participant Comparison</h2>
+        <div id="participant-comparison-content" class="participant-comparison-content">
+          <!-- Content will be inserted dynamically -->
+        </div>
+      </section>
+    </main>
+
+    <!-- Summary Card Button -->
+    <div class="summary-card-fab">
+      <button id="summary-card-button" class="summary-card-button" title="Year in Review">
+        ✨
+      </button>
+    </div>
+
+    <!-- Export Button -->
+    <div class="export-fab">
+      <button id="export-button" class="export-button" title="Export Analysis">
+        📄
+      </button>
+    </div>
+  </div>
+
+  <!-- Loading Overlay -->
+  <div id="loading-overlay" class="loading-overlay hidden">
+    <div class="loading-spinner"></div>
+    <div class="loading-text">Analyzing your conversation...</div>
+  </div>
+
+  <!-- Error Modal -->
+  <div id="error-modal" class="modal hidden">
+    <div class="modal-content">
+      <h2 class="modal-title">Error</h2>
+      <p id="error-message" class="modal-message"></p>
+      <button id="error-close-button" class="modal-button">Close</button>
+    </div>
+  </div>
+
+  <!-- Dependencies -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+  <!-- Sentiment Analysis Library -->
+  <script type="module">
+    try {
+      const { default: Sentiment } = await import('https://cdn.jsdelivr.net/npm/sentiment@5.0.2/+esm');
+      window.Sentiment = Sentiment;
+    } catch (error) {
+      window.Sentiment = null;
+    }
+  </script>
+
+  <!-- App Scripts -->
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
